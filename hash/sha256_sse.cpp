@@ -16,7 +16,11 @@
 */
 
 #include "sha256.h"
+#ifdef __aarch64__
+#include "../sse2neon.h"
+#else
 #include <immintrin.h>
+#endif
 #include <string.h>
 #include <stdint.h>
 

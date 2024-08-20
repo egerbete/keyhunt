@@ -31,7 +31,14 @@ namespace _sha256
 
   static const unsigned char pad[64] = { 0x80 };
 
-#ifndef WIN64
+#if defined(__aarch64__)
+#define _byteswap_ulong __builtin_bswap32
+#define _byteswap_uint64 __builtin_bswap64
+inline uint32_t _rotr(uint32_t x, uint8_t n) {
+  return (x >> n) | (x << (31 - n) << 1);
+}
+
+#elif !defined(_WIN64) && !defined(__aarch64__)
 #define _byteswap_ulong __builtin_bswap32
 #define _byteswap_uint64 __builtin_bswap64
 inline uint32_t _rotr(uint32_t x, uint8_t r) {

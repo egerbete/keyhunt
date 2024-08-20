@@ -63,6 +63,12 @@ Please install on your system
 - git
 - build-essential
 
+for ARM64 on Mac with Apple Silicon please install the Xcode Command Line Tools:
+
+````
+xcode-select --install
+````
+
 for legacy version also you are going to need:
 
 - libssl-dev
@@ -95,6 +101,12 @@ First compile:
 
 ```
 make
+```
+
+or compile for ARM64 with clang (Mac with Apple Silicon):
+
+```
+make arm
 ```
 
 if you have problems compiling the `main` version you can compile the `legacy` version

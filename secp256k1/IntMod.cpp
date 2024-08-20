@@ -16,7 +16,11 @@
 */
 
 #include "Int.h"
+#ifdef __aarch64__
+#include "../sse2neon.h"
+#else
 #include <emmintrin.h>
+#endif
 #include <string.h>
 
 #define MAX(x,y) (((x)>(y))?(x):(y))

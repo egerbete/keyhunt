@@ -21,7 +21,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#ifdef __aarch64__
+#include "../sse2neon.h"
+#else
 #include <emmintrin.h>
+#endif
 
 #define MAX(x,y) (((x)>(y))?(x):(y))
 #define MIN(x,y) (((x)<(y))?(x):(y))
@@ -501,7 +505,7 @@ void Int::ShiftL32BitAndSub(Int *a,int n) {
 
 void Int::ShiftL(uint32_t n) {
 
-  if( n<64 ) {
+  if( n<=64 ) {
 	shiftL((unsigned char)n, bits64);
   } else {
     uint32_t nb64 = n/64;

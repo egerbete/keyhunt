@@ -120,7 +120,7 @@ void rseed(unsigned long seed) {
 	//srand(seed);
 }
 
-#if defined(_WIN64) && !defined(__CYGWIN__)
+#if defined(_WIN64) && !defined(__CYGWIN__) || defined(__aarch64__)
 unsigned long rndl() {
 	return rk_random(&localState);
 }

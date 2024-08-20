@@ -195,9 +195,54 @@ private:
 
 // Inline routines
 
-#ifndef _WIN64
+#if defined(__aarch64__)
 
-// Missing intrinsics
+// Missing intrinsics ARM64
+typedef unsigned __int128 uint128_t;
+
+ static uint64_t inline _umul128(uint64_t a, uint64_t b, uint64_t* h)
+{
+    uint128_t x = (uint128_t)a * b;
+    *h = (uint64_t)(x >> 64); // high
+    return (uint64_t)x; // low
+}
+
+/*static uint64_t inline _umul128(uint64_t a, uint64_t b, uint64_t* h)
+{
+  uint64_t rhi;
+  uint64_t rlo = a * b;
+  __asm(
+      "UMULH %0, %1, %2\n\t"
+      : "=r"(rhi)
+      : "r"(a), "r"(b));
+  *h = rhi;
+  return rlo;
+}*/
+
+static uint64_t f_subborrow_u64(uint8_t c, uint64_t a, uint64_t b, uint64_t* low)
+{
+  uint128_t t = ((uint128_t)b + c);
+  uint128_t x = a - t;
+  *low = (uint64_t)x;
+  return (uint8_t)(x >> 127);
+}
+
+static uint64_t f_addcarryx_u64(uint8_t c, uint64_t a, uint64_t b, uint64_t* low)
+{
+  uint128_t x = (uint128_t)a + b + c;
+  *low = (uint64_t)x;
+  return (uint64_t)(x >> 64);
+}
+
+#define __shiftright128(a, b, n) ((a) >> (n)) | ((b) << (64 - (n)))
+#define __shiftleft128(a, b, n) ((b) << (n)) | ((a) >> (64 - (n)))
+#define _subborrow_u64(a, b, c, d) f_subborrow_u64(a, b, c, (uint64_t*)d);
+#define _addcarry_u64(a, b, c, d) f_addcarryx_u64(a, b, c, (uint64_t*)d);
+#define _byteswap_uint64 __builtin_bswap64
+
+#elif !defined(_WIN64) && !defined(__aarch64__)
+
+// Missing intrinsics Win64
 static uint64_t inline _umul128(uint64_t a, uint64_t b, uint64_t *h) {
   uint64_t rhi;
   uint64_t rlo;
